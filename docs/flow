@@ -1,0 +1,18 @@
+@startuml
+skinparam sequence {
+ParticipantBorderColor black
+ParticipantBackgroundColor lightBlue
+ArrowColor black
+LifeLineBorderColor black
+}
+activate Dataspace
+Dataspace -> DSC: Request for Data
+activate DSC
+DSC -> IDSWrapper : Request for data
+activate IDSWrapper
+IDSWrapper ->> OIH : Initiate data collection
+OIH ->> IDSWrapper : Send data
+IDSWrapper-->DSC: data
+deactivate IDSWrapper
+DSC --> Dataspace: data
+@enduml
