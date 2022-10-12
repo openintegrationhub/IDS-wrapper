@@ -8,10 +8,12 @@ available in the dataspace. The DSC is the gateway to the dataspace and contains
 necessary functionally to communicate within other participants of the dataspace.
 Whereas the OIH uses asynchronous webhooks, the dataspace synchronous messages
 are required to exchange data. Therefore, the IDS-Wrapper was implemented 
-to bridge the gap between these different messages.
+to bridge the gap between these different messages. The overview of connectivity of OIH-IDS can be found [here](https://openintegrationhub.github.io/docs/4/ForDevelopers/IDS-Connectivity.html). **[TODO]** Later in the *Usage* section there will be step-wise example to setup everything and running a flow to show connectivity. 
 
 ![flow](docs/flow.png)
-## Running
+
+
+## Installation
 
 Clone this repository and navigate to the root folder and run the following commands
 
@@ -29,6 +31,12 @@ docker run -p8887:8080 this:latest
 ```
 
 ## Usage
+### Requirements
+- OIH(Open Integration Hub) Please make sure to clone the [monorepo](https://github.com/openintegrationhub/openintegrationhub) and follow the instruction to install it on the system before you start.
+- [Dataspace Connector (DSC)](https://www.dataspace-connector.io)
+- [IDS-SQL-Adapter](https://github.com/openintegrationhub/IDS-SQL-Adapter) (component)
+- [IDS-Gateway](https://github.com/openintegrationhub/IDS-gateway#actions) (component)
+
 To initiate the data collection a resource needs to be registered at the DSC as described [here](https://github.com/openintegrationhub/IDS-gateway#actions). 
 In the respective resource the URL to the `/service` endpoint of the IDS-Wrapper has to be entered.
 This endpoint takes two parameters. The flowId of the flow to be triggered and filter which are the
