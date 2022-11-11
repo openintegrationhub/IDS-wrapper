@@ -94,6 +94,7 @@ The two flows can be described as in the following image from [OIH Documentation
 6. The data can be discovered by an IDS consumer.
 
 **Request data:**
+
 7. An IDS consumer requests data by using the UID.
 8. DSC requests the data by sending a GET request containing the flow ID to the IDS-Wrapper.
 9. IDS-Wrapper triggers flow 2 by a POST request containing the data UID.
