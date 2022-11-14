@@ -373,4 +373,16 @@ Sends the following request:
   "metadata": {}
 }
 ```
+#### Troubleshooting
 
+Here are some common errors that could occur and how to fix them:
+
+| Errors        | Possible Fix           |
+| ------------- |-------------|
+| Component is not accessible      | Check that the component is set to `global`.    |
+| Flow is not starting      | Make sure you reload the page after clicking the `start` button. |
+| Can't access the Postgres database, DSC or Broker from OIH | If Postgres database, DSC or Broker are hosted in the local host, then OIH Kubernetes cluster will not be able to access them, They must be running in the same Kubernetes cluster or on a dedicated server. This will ensure that all applications are running in same network and able to communicate with each other.    |
+| The flow begins late or after a period of time.      | The flow is triggered by a cron job that is executed every time. Make sure the `cron` parameter is set to a shorter period. (Please keep in mind that `cron` does not support seconds.) |
+| I get `Resource not found` when sending a resource to the Broker.      | Check if your resource meets the requirements mentioned above. |
+| When I create a flow, it does not shown in the flow list.  | Check that all of your flow parameters are in 'yml' format and they are valid. |
+| If there is an issue, where can I see the logs?  | Unfortunately, the browser won't tell information about the errors. Check the `Component Orchestrator Logs` or type `minikube dashboard` in terminal, it will launch a webpage and then select `pods`, you will see the flows logs.|
