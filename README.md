@@ -1,4 +1,24 @@
-## IDS-Wrapper
+#### Table of contents
+- [IDS-Wrapper](#ids-wrapper)
+- [Usage](#usage)
+  * [Requirements](#requirements)
+  * [Installation Steps](#installation-steps)
+  * [Running flows](#running-flows)
+    + [Definition](#definition)
+    + [IDS - OIH Connectivity flow](#ids---oih-connectivity-flow)
+    + [Example](#example)
+  * [Valid Resource](#valid-resource)
+    + [Registering Valid Resource](#registering-valid-resource)
+      - [Requirements:](#requirements-)
+      + [Steps for Installation of DSC-UI:](#steps-for-installation-of-dsc-ui-)
+      - [Steps for Registering Example Resource using DSC-UI and DSC:](#steps-for-registering-example-resource-using-dsc-ui-and-dsc-)
+      - [Steps for Sending Resource to Meta-Data Broker using DSC:](#steps-for-sending-resource-to-meta-data-broker-using-dsc-)
+  * [Understanding IDS-Wrapper API](#understanding-ids-wrapper-api)
+      - [Example](#example-1)
+  * [Troubleshooting](#troubleshooting)
+
+
+# IDS-Wrapper
 The IDS-Wrapper provides the capabilities for a central data integration
 from the OIH to [International Data Spaces](https://internationaldataspaces.org/). Currently, there are three components
 interacting with each other to allow the data exchange between the Open
@@ -8,28 +28,40 @@ available in the dataspace. The DSC is the gateway to the dataspace and contains
 necessary functionally to communicate within other participants of the dataspace.
 Whereas the OIH uses asynchronous webhooks, the dataspace synchronous messages
 are required to exchange data. Therefore, the IDS-Wrapper was implemented 
-to bridge the gap between these different messages. The overview of connectivity of OIH-IDS can be found [here](https://openintegrationhub.github.io/docs/4/ForDevelopers/IDS-Connectivity.html). **[TODO]** Later in the *Usage* section there will be step-wise example to setup everything and running a flow to show connectivity. 
+to bridge the gap between these different messages. The overview of connectivity of OIH-IDS can be found [here](https://openintegrationhub.github.io/docs/4/ForDevelopers/IDS-Connectivity.html).
 
-![flow](docs/flow.png)
+<p align="center">
+<img src="docs/flow.png" >
+</p>
 
-## Usage
-### Requirements
+# Usage
+Before using the IDS-wrapper please make sure following requirements are fullfiled:
+## Requirements
 - OIH(Open Integration Hub) Please make sure to clone the [monorepo](https://github.com/openintegrationhub/openintegrationhub) and follow the instruction to install it on the system before you start. 
 - [IDS-SQL-Adapter](https://github.com/openintegrationhub/IDS-SQL-Adapter) (OIH component)
 - [IDS-Gateway](https://github.com/openintegrationhub/IDS-gateway#actions) (OIH component)
 - [Dataspace Connector (DSC)](https://www.dataspace-connector.io)
 - [IDS Metadata Broker](https://github.com/International-Data-Spaces-Association/metadata-broker-open-core)
 - [Dataspace Connector UI (DSC-UI)](https://github.com/International-Data-Spaces-Association/DataspaceConnectorUI)
-- A running PostgreSQL database where the data can be stored.
+- A running SQL(e.g. PostgreSQL) database where the data can be stored.
 
-### Installation Steps
+## Installation Steps
 
 - Install OIH using one of the methods listed [here](https://openintegrationhub.github.io/docs/4%20-%20ForDevelopers/Intro.html). It is recommended to use a Linux system with Docker installation.
     - Login into the OIH using `web-ui.example.com`(adjust the `web-ui` url if you have changed default) and ``` "username": admin@openintegrationhub.com ,
-  "password": somestring``` ![Web-ui](docs/webui_login.jpg)
-    - Go to `Components` on left panel and click on `Add` to add new components.![Component](docs/webui_component.png)
-    - Please put the docker image for the respective components in `image:`
-    ```yaml
+  "password": somestring``` 
+<p align="center">
+<img src="docs/webui_login.jpg" width="50%" height="50%">
+</p>
+
+  - Go to `Components` on left panel and click on `Add` to add new components.
+<p align="center">
+<img src="docs/webui_component.png" width="50%" height="50%">
+</p>
+
+  - Please put the docker image URL for the respective components in `image:` atrribute:
+  
+```yaml
     {
   distribution: {
     type: 'docker',
@@ -43,29 +75,31 @@ to bridge the gap between these different messages. The overview of connectivity
   descriptor: {
     actions: [],
     triggers: []
-    ```
+  ```
 
-    - Now, Add the components [IDS-SQL-Adapter](https://github.com/openintegrationhub/IDS-SQL-Adapter) and [IDS-Gateway](https://github.com/openintegrationhub/IDS-gateway#actions) to OIH like in the following image and make sure to start them:
+   - Now, Add the components [IDS-SQL-Adapter](https://github.com/openintegrationhub/IDS-SQL-Adapter) and [IDS-Gateway](https://github.com/openintegrationhub/IDS-gateway#actions) to OIH like in the following image and make sure to start them:
 ![flow](docs/oih_components.png)
 - Install and run [Dataspace Connector (DSC)](https://www.dataspace-connector.io) and [IDS Metadata Broker](https://github.com/International-Data-Spaces-Association/metadata-broker-open-core). Alternatively, if they are already running versions, they can be used as well.
 - Install and run **IDS-Wrapper** as described:
 
-##### Run locally
+  - Run locally
+
     ```bash
     ./mvnw clean package
     cd target
     java -jar ids-wrapper-{version}.jar
     ```
-##### Run with docker
+  - Run with docker
+
     ```bash
     mvn clean package
     docker build --tag=this:latest .
     docker run -p 8887:8080 this:latest
     ```
 
-### Running flows
+## Running flows
 
-#### Definition 
+### Definition 
 
 - A **Component** is a small set of functions packaged as a Docker image. The OIH runs these images as containerized 
 applications, passing data into them and executing the functions provided by the component.
@@ -77,13 +111,14 @@ The figure below demonstrates a flow that downloads contacts from Google Contact
 
 ![Example Flow from OIH docs](docs/flow_def.png)
 
-#### IDS - OIH Connectivity flow 
+### IDS - OIH Connectivity flow 
 
 There are two flows to run in order to test the communication between IDS and OIH. The first one is known as data registration, while the second one is known as data request.
 
 The two flows can be described as in the following image from [OIH Documentation](https://openintegrationhub.github.io/docs/4%20-%20ForDevelopers/IDS-Connectivity.html):
-
-![IDS OIH Flow](docs/ids-overview.png)
+<p align="center">
+<img src="docs/ids-overview.png" width="50%" height="50%">
+</p>
 
 **Register data:**
 1. Flow 1 is triggered by a webhook or cron job event and receives or polls data from a data source.
@@ -104,7 +139,7 @@ The two flows can be described as in the following image from [OIH Documentation
 13. DSC responds to the IDS broker by sending the data artifact.
 14. IDS broker sends requested data back to the IDS consumer.
 
-#### Example
+### Example
 
 1. Registering data flow:
 ```yaml
@@ -262,7 +297,7 @@ The two flows can be described as in the following image from [OIH Documentation
 }
 ```
 
-#### Valid Resource 
+## Valid Resource 
 In order for the resource registeration to be successful, However, a resource must meet some requirements:
 - Resource have to be defined and linked to a catalog, representation, and contract
 - Representation have to be linked to an artifact
@@ -270,14 +305,15 @@ In order for the resource registeration to be successful, However, a resource mu
 
 The image below illustrates what a valid resource looks like:
 
-![Valid Resource](docs/data_model.png)
+<p align="center">
+<img src="docs/data_model.png" width="324" height="324">
+</p>
 
-
-##### Registering Valid Resource 
+### Registering Valid Resource 
 
 To register a valid resource to DSC we require DSC-UI. The DSC-UI will provide all necessary fields needed to register a valid resource.
 
-###### Requirements:
+#### Requirements:
 
 Make sure following applications are up and running:
 
@@ -292,10 +328,12 @@ Following are the steps to setup and register an example resource data using DSC
 3. Now you can open the application in the browser using following urls based on the installation method:
   - docker:`localhost:8083` 
   - npm:`localhost:8082`
-  
-  ![Dashboard DSC-UI](docs/dsc_ui_dashboard.png)
+<p align="center">
+<img src="docs/dsc_ui_dashboard.png" width="50%" height="50%">
+</p>
 
-###### Steps for Registering Example Resource using DSC-UI and DSC:
+
+#### Steps for Registering Example Resource using DSC-UI and DSC:
 We will see an example on how to register a resource using DSC-UI and DSC. 
 
 - *Note*:
@@ -303,9 +341,15 @@ We will see an example on how to register a resource using DSC-UI and DSC.
   - We are using a pre-build meta broker from following url `https://demo3.iais.fraunhofer.de/browse/` which is used for testing and development purpose at `Fraunhofer`. In order to access the url you need to connect to the Fraunhofer VPN.
   
 1. Click on the options on left panel to start the adding offering process`data offering` -> `offerings` -> `Add offering`
-  ![Add offering](docs/dscui1.png)
+<p align="center">
+<img src="docs/dscui1.png" width="50%" height="50%">
+</p>
+
 2. Fill out the `Meta Data` section with some example data as shown in image below and click on `Next` located at bottom.
-  ![offering metadata](docs/dscui_meta.png)
+<p align="center">
+<img src="docs/dscui_meta.png" width="50%" height="50%">
+</p>
+
 3. In `Policy` section we need to create a `contract` using DSC. 
    In order to create contract we will use DSC API via swagger UI. The steps are given below: 
     - visit swagger UI `localhost:6060/api/docs` . If it prompts for authentication then please enter `*Username*: admin` and `*password*: password` .
@@ -313,7 +357,9 @@ We will see an example on how to register a resource using DSC-UI and DSC.
     - Perform a `Post` request at `/api/contracts` endpoint to create `sample contract` which can be later used in DSC-UI.
 
    Now, we can see a `sample contract` which we just created using DSC APIs in `Select a Policy Pattern template`. Other fields can be fields can be filled as shown in image below and then click on `Next`.
-  ![offering policy](docs/dscui_policy.png)
+<p align="center">
+<img src="docs/dscui_policy.png" width="50%" height="50%">
+</p>
 4. Choose any file in the `Representation` section and click `Next`
 
 5. Similar to Step 3, inside `Catalog` section we need to create a `catalog` using DSC. 
@@ -328,7 +374,7 @@ We will see an example on how to register a resource using DSC-UI and DSC.
  
  7. Now if we visit `Offering` again we will find the new resource which we just created, will appear in the list.
 
-###### Steps for Sending Resource to Meta-Data Broker using DSC:
+#### Steps for Sending Resource to Meta-Data Broker using DSC:
 
 1. First, we need to register the DSC in the broker. we will use DSC API via swagger UI. The steps are given below: 
    - visit swagger UI `localhost:6060/api/docs` . If it prompts for authentication then please enter `*Username*: admin` and `*password*: password` .
@@ -336,17 +382,23 @@ We will see an example on how to register a resource using DSC-UI and DSC.
    - Perform a `Post` request at `/api/ids/connector/update` endpoint to send an IDS connector or DSC Update Message.
    - click on `Try it out` and paste the url of broker and add `infrastructure` at the end of url, i.e.  `https://demo3.iais.fraunhofer.de/infrastructure`. Then click on `execute`.
    - Now, if you visit the broker at url `https://demo3.iais.fraunhofer.de/browse/` then we will find the broker `Dataspace Connector` appear under `Connector` section.
-     ![Broker with DSC](docs/broker.png)
+<p align="center">
+<img src="docs/broker.png" width="50%" height="50%">
+</p>
 
 2. In order to send resource to meta-data broker we will use DSC API via swagger UI. The steps are given below: 
    - visit swagger UI `localhost:6060/api/docs` . If it prompts for authentication then please enter `*Username*: admin` and `*password*: password` .
    - Go to `_Messaging` for viewing different endpoints to invoke sending messages.
-   - Perform a `Post` request at `/api/ids/resource/update` endpoint to register the resource in broker. click on `Try it out` and then in `recipient` field enter the broker url, i.e. `https://demo3.iais.fraunhofer.de/infrastructure` and in `resourceId` field we need the resource Id of the resource `example resource` which we created using DSC-UI. In order to find the `resourceId` we need to go to `/api/offers` endpoint and click on `Try me out` and then `execute`. Then in `Response body` we will find resource Id under "links" -> "self" -> "href" . It will look like as shown in image below: ![Resource Id](docs/resourceId.png)
+   - Perform a `Post` request at `/api/ids/resource/update` endpoint to register the resource in broker. click on `Try it out` and then in `recipient` field enter the broker url, i.e. `https://demo3.iais.fraunhofer.de/infrastructure` and in `resourceId` field we need the resource Id of the resource `example resource` which we created using DSC-UI. In order to find the `resourceId` we need to go to `/api/offers` endpoint and click on `Try me out` and then `execute`. Then in `Response body` we will find resource Id under "links" -> "self" -> "href" . It will look like as shown in image below: 
+<p align="center">
+<img src="docs/resourceId.png" width="50%" height="50%">
+</p>
 3. Now, resource `example resource` will appear in the broker under `Resources` as shown in image.
-    ![Resource in Broker](docs/broker_resource.png)
+<p align="center">
+<img src="docs/broker_resource.png" width="50%" height="50%">
+</p>
 
-
-#### Understanding IDS-Wrapper API
+## Understanding IDS-Wrapper API
 
 To initiate the data collection a resource needs to be registered at the DSC as described [here](https://github.com/openintegrationhub/IDS-gateway#actions). 
 In the respective resource the URL to the `/service` endpoint of the IDS-Wrapper has to be entered.
@@ -359,7 +411,7 @@ be passed through the pending initial request of the DSC**.
 For testing purposes there is another endpoint `/test`
 that calls the `/webhook` endpoint
 
-##### Example
+#### Example
 `http://localhost:8081/service?flowId=http://localhost:8081/test&filter=32eb946a4e3c72b8a42dd16b387e74ee`
 
 Sends the following request: 
@@ -373,7 +425,7 @@ Sends the following request:
   "metadata": {}
 }
 ```
-#### Troubleshooting
+## Troubleshooting
 
 Here are some common errors that could occur and how to fix them:
 
